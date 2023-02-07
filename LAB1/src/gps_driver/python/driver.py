@@ -9,9 +9,10 @@ from gps_driver.msg import *
 
 msg = gps_msg()
 def driver():
-    pub = rospy.Publisher('gps', gps_msg, queue_size=10)
+    
     rospy.init_node('talker', anonymous=True)
-
+    pub = rospy.Publisher('gps', gps_msg, queue_size=10)
+    
     args = rospy.myargv(argv = sys.argv)
     if len(args) != 2:
         print("error")
@@ -71,7 +72,7 @@ def driver():
             msg.header.stamp.secs = int(total_utc_secs)
             msg.header.stamp.nsecs = int(str(total_utc_nsecs)[:5])
             #print(f'UTM_East, UTM_north, Zone, Letter: {utm_lat_long}')
-            msg.header.frame_id = 'GPS1_Frame'
+            msg.header.frame_id = "GPS1_Frame"
             msg.Latitude = latitude_converted
             msg.Longitude = longitude_converted
             msg.Hdop = hdop
