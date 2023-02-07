@@ -8,10 +8,9 @@ project(gps_driver)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  message_generation
   rospy
-  sensor_msgs
   std_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -71,7 +70,6 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
  generate_messages(
    DEPENDENCIES
-   sensor_msgs
    std_msgs
  )
 
@@ -107,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES gps_driver
-#  CATKIN_DEPENDS rospy sensor_msgs std_msgs
+  CATKIN_DEPENDS message_runtime rospy std_msgs
 #  DEPENDS system_lib
 )
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env
+# -*- coding: utf-8 -*-
 
 import rospy
 import serial
@@ -18,7 +19,7 @@ def driver():
         sys.exit(1)
 
     connected_port = args[1]
-    msg = gps_msg()
+    
     serial_port = rospy.get_param('~port', connected_port)
     #serial_port = rospy.get_param('~port', '/dev/pts/4')
     serial_baud = rospy.get_param('~baudrate', 4800)
@@ -67,7 +68,8 @@ def driver():
             utm_lat_long = utm.from_latlon(
                 latitude_converted, longitude_converted)
 	      
-	    
+	               
+            msg = gps_msg()
             msg.Header.stamp.secs = int(total_utc_secs)
             msg.Header.stamp.nsecs = int(str(total_utc_nsecs)[:5])
             #print(f'UTM_East, UTM_north, Zone, Letter: {utm_lat_long}')
