@@ -1,36 +1,43 @@
-#!/usr/bin/env
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import rospy
 import serial
-import utm
-import sys
+from std_msgs.msg import *
 from gps_driver.msg import gps_msg
-from gps_driver.msg import *
+import utm
+import argparse
+import sys
+
 
 def driver():
-    
-    rospy.init_node('talker', anonymous=True)
-    pub = rospy.Publisher('gps', gps_msg, queue_size=10)
-    
-    args = rospy.myargv(argv = sys.argv)
+
+    args = rospy.myargv(argv=sys.argv)
     if len(args) != 2:
         print(error)
         sys.exit(1)
 
-    connected_port = args[1]
-    
-    serial_port = rospy.get_param('~port', connected_port)
-    #serial_port = rospy.get_param('~port', '/dev/pts/4')
-    serial_baud = rospy.get_param('~baudrate', 4800)
-    #rate = rospy.Rate(10)
-    
-    
-    serialData = serial.Serial(serial_port, serial_baud, timeout = 3)
-    
-    while not rospy.is_shutdown():  
-        	
-        data = str(serialData.readline())
+    serial_port_arg = args[1]
+
+    SENSOR_NAME = "gps"
+    rospy.init_node('talker')
+
+    # port = rospy.get_param('~port','/dev/pts/2') # hardcode serial port
+    port = rospy.get_param('~port', serial_port_arg)
+    baud = rospy.get_param('~baudrate', 4800)
+
+    port = serial.Serial(port, baud, timeout=3.)
+    rospy.logdebug("Using GPS sensor on port " +
+                   serial_port_arg+" at "+str(baud))
+
+    rospy.sleep(0.2)  # 5Hz sampling rate
+
+    rospy.loginfo("Publishing GPS")
+
+    pub = rospy.Publisher('/gps', gps_msg, queue_size=5)
+
+    while not rospy.is_shutdown():
+        data = str(port.readline())
         recievedData = str(data).split(',')
         if recievedData[0] == "b'$GPGGA":
             utc = float(recievedData[1])
@@ -44,7 +51,7 @@ def driver():
             latitude_direction = recievedData[3]
             latitude_correction = 1
             if latitude_direction == "S":
-            	latitude_correction = -1
+                latitude_correction = -1
 
             latitude_degree = int(latitude/100)
             latitude_minutes = float(latitude) - (latitude_degree * 100)
@@ -55,7 +62,7 @@ def driver():
             longitude_direction = recievedData[5]
             longitude_correction = 1
             if longitude_direction == "W":
-            	longitude_correction = -1
+                longitude_correction = -1
 
             longitude_degree = int(longitude / 100)
             longitude_minutes = float(longitude) - (longitude_degree * 100)
@@ -67,8 +74,7 @@ def driver():
 
             utm_lat_long = utm.from_latlon(
                 latitude_converted, longitude_converted)
-	      
-	               
+
             msg = gps_msg()
             msg.Header.stamp.secs = int(total_utc_secs)
             msg.Header.stamp.nsecs = int(str(total_utc_nsecs)[:5])
@@ -84,12 +90,10 @@ def driver():
             msg.Letter = utm_lat_long[3]
             rospy.loginfo(msg)
             pub.publish(msg)
-            #rate.sleep()
-	    
 
 if __name__ == '__main__':
-
     try:
         driver()
+        a = 1
     except rospy.ROSInterruptException:
         pass
