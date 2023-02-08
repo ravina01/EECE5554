@@ -110,7 +110,7 @@ if __name__ == '__main__':
                         msg.Latitude =  latitude
                         msg.Longitude = longitude
                         msg.Altitude = altitude
-                        msg.Hdop = hdop
+                        msg.HDOP = hdop
                         msg.UTM_easting = utm_easting
                         msg.UTM_northing = utm_northing
                         msg.Zone = zone_num
