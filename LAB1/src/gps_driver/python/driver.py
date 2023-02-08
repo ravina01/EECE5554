@@ -113,6 +113,7 @@ if __name__ == '__main__':
                         msg.HDOP = hdop
                         msg.UTM_easting = utm_easting
                         msg.UTM_northing = utm_northing
+                        msg.UTC = utc
                         msg.Zone = zone_num
                         msg.Letter = zone_letter
                         pub.publish(msg)
