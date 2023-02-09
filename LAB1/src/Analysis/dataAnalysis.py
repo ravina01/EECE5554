@@ -88,22 +88,3 @@ print(mean_easting)
 print(mean_northing)
 print(median_easting)
 print(median_northing)
-
-
-
-fig=plt.figure()
-myaxes=fig.add_axes([0,0,1,1])
-myaxes.plot(easting,northing,'r', lw='3')
-myaxes.set_title('straight line data')
-myaxes.set_xlabel('UTM_Easting (Meter)')
-myaxes.set_ylabel('UTM_Northing (Meter)')
-#Slope(m) and Y intercept(c) calculation
-m, c = np.polyfit(easting, northing,1)
-plt.plot(easting, m*easting + c)
-
-
-
-
-
-
-
