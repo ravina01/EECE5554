@@ -2,6 +2,7 @@ import bagpy
 from bagpy import bagreader
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 #Uncomment below line to see : Scatter plot of Open space walking
 #path = "/home/ravina/catkin_ws/src/gps_driver/Data/walking/open/open_walking.bag"
@@ -23,6 +24,12 @@ bag = bagreader(path)
 bag.topic_table
 data = bag.message_by_topic('/gps')
 readings = pd.read_csv(data)
+x = readings['UTM_easting']
+y = readings['UTM_northing']
+
+easting = readings['UTM_easting']
+northing =  readings['UTM_northing']
+
 readings['UTM_easting'] = readings['UTM_easting'] - readings['UTM_easting'].min()
 readings['UTM_northing'] = readings['UTM_northing'] - readings['UTM_northing'].min()
 print(readings[['UTM_easting', 'UTM_northing']])
@@ -49,3 +56,54 @@ for axis in bx:
     axis.set_ylabel('Altitude in meters', fontsize = 20)
     plt.savefig(path.split('.')[0] + "_alti" + ".png", bbox_inches = "tight")
 plt.show()
+
+#Known Locations
+open1 = [327748.86,4689330.21] # exact location of open space
+occluded = [327970.56,4689515.05] # exact location of partially occluded space
+
+error_easting = [item - occluded[0] for item in x]
+error_northing = [item - occluded[1] for item in y]
+
+mean_easting = np.mean(error_easting)
+mean_northing = np.mean(error_northing)
+
+median_easting = np.median(error_easting)
+median_northing = np.median(error_northing)
+
+fig3,ax3 = plt.subplots(2)
+ax3[0].hist(error_easting, bins = 20)
+ax3[0].set_title('Easting error(m)')
+ax3[0].set_xlabel('Error from known(m) Measured Easting(m)')
+ax3[0].set_ylabel('Frequency of error in Easting(m)')
+
+ax3[1].hist(error_northing, bins = 20)
+ax3[1].set_title('Northing error(m)')
+ax3[1].set_xlabel('Error from known(m) Measured Northing(m)')
+ax3[1].set_ylabel('Frequency of error in Northing(m)')
+
+plt.show()
+fig3.savefig(path.split('.')[0] + "error_hist" + ".png", bbox_inches = 'tight')
+
+print(mean_easting)
+print(mean_northing)
+print(median_easting)
+print(median_northing)
+
+
+
+fig=plt.figure()
+myaxes=fig.add_axes([0,0,1,1])
+myaxes.plot(easting,northing,'r', lw='3')
+myaxes.set_title('straight line data')
+myaxes.set_xlabel('UTM_Easting (Meter)')
+myaxes.set_ylabel('UTM_Northing (Meter)')
+#Slope(m) and Y intercept(c) calculation
+m, c = np.polyfit(easting, northing,1)
+plt.plot(easting, m*easting + c)
+
+
+
+
+
+
+
