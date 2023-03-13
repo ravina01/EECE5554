@@ -92,19 +92,19 @@ def imu_driver():
             msg.header.stamp.secs = int(now.secs)
             msg.header.stamp.nsecs = int(now.nsecs)
             msg.header.frame_id = 'imu1_Frame'
-            msg.IMU.orientation.x = qx
-            msg.IMU.orientation.y = qy
-            msg.IMU.orientation.z = qz
-            msg.IMU.orientation.w = qw
-            msg.IMU.linear_acceleration.x = accX
-            msg.IMU.linear_acceleration.y = accY
-            msg.IMU.linear_acceleration.z = accZ
-            msg.IMU.angular_velocity.x = gyroX
-            msg.IMU.angular_velocity.y = gyroY
-            msg.IMU.angular_velocity.z = gyroZ
-            msg.MagField.magnetic_field.x = magX
-            msg.MagField.magnetic_field.y = magY
-            msg.MagField.magnetic_field.z = magZ
+            msg.imu.orientation.x = qx
+            msg.imu.orientation.y = qy
+            msg.imu.orientation.z = qz
+            msg.imu.orientation.w = qw
+            msg.imu.linear_acceleration.x = accX
+            msg.imu.linear_acceleration.y = accY
+            msg.imu.linear_acceleration.z = accZ
+            msg.imu.angular_velocity.x = gyroX
+            msg.imu.angular_velocity.y = gyroY
+            msg.imu.angular_velocity.z = gyroZ
+            msg.mag_field.magnetic_field.x = magX
+            msg.mag_field.magnetic_field.y = magY
+            msg.mag_field.magnetic_field.z = magZ
 
             pub.publish(msg)
             rospy.loginfo(msg)
